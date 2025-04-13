@@ -26,33 +26,54 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
         pip install PySide6==6.6.1 PySide6-Essentials==6.6.1 PySide6-Addons==6.6.1 shiboken6==6.6.1
+        pip list
     
     - name: Build application for Intel
       env:
         ARCHFLAGS: "-arch x86_64"
         MACOSX_DEPLOYMENT_TARGET: "10.15"
       run: |
+        echo "Current directory:"
+        pwd
+        echo "Directory contents:"
         ls -la
-        python -c "import sys; print(sys.path)"
-        python -c "import platform; print(platform.machine())"
-        pyinstaller build_mac.spec --target-arch x86_64
+        echo "Python path:"
+        python -c "import sys; print('\n'.join(sys.path))"
+        echo "Platform info:"
+        python -c "import platform; print(platform.machine()); print(platform.platform())"
+        echo "Building application..."
+        pyinstaller build_mac.spec --target-arch x86_64 --clean
+        echo "Build complete. Checking dist directory:"
         ls -la dist
         cd dist
-        ls -la
+        echo "App contents:"
+        ls -la 简历匹配分析工具.app/Contents/MacOS/
     
     - name: Compress application
       run: |
         cd dist
+        echo "Creating zip archive..."
         zip -r 简历匹配分析工具-macOS-Intel.zip 简历匹配分析工具.app
+        echo "Zip contents:"
         ls -la
     
-    - name: Release
-      uses: softprops/action-gh-release@v1
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        files: dist/简历匹配分析工具-macOS-Intel.zip
-        tag_name: v${{ github.run_number }}
-        name: macOS Intel Build v${{ github.run_number }}
+        tag_name: mac-v${{ github.run_number }}
+        release_name: macOS Intel Build v${{ github.run_number }}
         draft: false
-        prerelease: false 
+        prerelease: false
+    
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/简历匹配分析工具-macOS-Intel.zip
+        asset_name: 简历匹配分析工具-macOS-Intel.zip
+        asset_content_type: application/zip 
