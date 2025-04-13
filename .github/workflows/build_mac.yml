@@ -1,4 +1,4 @@
-name: Build macOS Application
+name: Build macOS Intel Application
 
 on:
   push:
@@ -26,54 +26,24 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
         pip install PySide6==6.6.1 PySide6-Essentials==6.6.1 PySide6-Addons==6.6.1 shiboken6==6.6.1
-        pip list
     
     - name: Build application for Intel
       env:
         ARCHFLAGS: "-arch x86_64"
         MACOSX_DEPLOYMENT_TARGET: "10.15"
       run: |
-        echo "Current directory:"
-        pwd
-        echo "Directory contents:"
-        ls -la
-        echo "Python path:"
-        python -c "import sys; print('\n'.join(sys.path))"
-        echo "Platform info:"
-        python -c "import platform; print(platform.machine()); print(platform.platform())"
-        echo "Building application..."
         pyinstaller build_mac.spec --target-arch x86_64 --clean
-        echo "Build complete. Checking dist directory:"
-        ls -la dist
-        cd dist
-        echo "App contents:"
-        ls -la 简历匹配分析工具.app/Contents/MacOS/
     
     - name: Compress application
       run: |
         cd dist
-        echo "Creating zip archive..."
         zip -r 简历匹配分析工具-macOS-Intel.zip 简历匹配分析工具.app
-        echo "Zip contents:"
-        ls -la
     
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: mac-v${{ github.run_number }}
-        release_name: macOS Intel Build v${{ github.run_number }}
+        files: dist/简历匹配分析工具-macOS-Intel.zip
+        tag_name: macos-intel
+        name: macOS Intel Build
         draft: false
-        prerelease: false
-    
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/简历匹配分析工具-macOS-Intel.zip
-        asset_name: 简历匹配分析工具-macOS-Intel.zip
-        asset_content_type: application/zip 
+        prerelease: false 
