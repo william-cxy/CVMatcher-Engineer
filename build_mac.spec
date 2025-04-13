@@ -43,7 +43,7 @@ exe = EXE(
     console=False,
     disable_windowed_traceback=False,
     argv_emulation=True,
-    target_arch=None,
+    target_arch='x86_64',
     codesign_identity=None,
     entitlements_file=None,
 )
@@ -60,5 +60,7 @@ app = BUNDLE(
         'CFBundleName': '简历匹配分析工具',
         'CFBundleDisplayName': '简历匹配分析工具',
         'CFBundleVersion': '1.0.0',
+        'LSMinimumSystemVersion': '10.15',
+        'NSAppleArchitecturePriority': ['x86_64'],
     },
 ) 

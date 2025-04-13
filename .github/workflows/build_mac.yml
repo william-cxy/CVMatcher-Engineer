@@ -28,11 +28,15 @@ jobs:
         pip install pyinstaller
         pip install PySide6==6.6.1 PySide6-Essentials==6.6.1 PySide6-Addons==6.6.1 shiboken6==6.6.1
     
-    - name: Build application
+    - name: Build application for Intel
+      env:
+        ARCHFLAGS: "-arch x86_64"
+        MACOSX_DEPLOYMENT_TARGET: "10.15"
       run: |
         ls -la
         python -c "import sys; print(sys.path)"
-        pyinstaller build_mac.spec
+        python -c "import platform; print(platform.machine())"
+        pyinstaller build_mac.spec --target-arch x86_64
         ls -la dist
         cd dist
         ls -la
@@ -40,7 +44,7 @@ jobs:
     - name: Compress application
       run: |
         cd dist
-        zip -r 简历匹配分析工具-macOS.zip 简历匹配分析工具.app
+        zip -r 简历匹配分析工具-macOS-Intel.zip 简历匹配分析工具.app
         ls -la
     
     - name: Create Release
@@ -49,8 +53,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: mac-v${{ github.run_number }}
-        release_name: macOS Release v${{ github.run_number }}
+        tag_name: mac-intel-v${{ github.run_number }}
+        release_name: macOS (Intel) Release v${{ github.run_number }}
         draft: false
         prerelease: false
     
@@ -60,6 +64,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/简历匹配分析工具-macOS.zip
-        asset_name: 简历匹配分析工具-macOS.zip
+        asset_path: ./dist/简历匹配分析工具-macOS-Intel.zip
+        asset_name: 简历匹配分析工具-macOS-Intel.zip
         asset_content_type: application/zip 
