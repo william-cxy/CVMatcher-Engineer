@@ -26,21 +26,56 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
         pip install PySide6==6.6.1 PySide6-Essentials==6.6.1 PySide6-Addons==6.6.1 shiboken6==6.6.1
+        echo "Installed packages:"
+        pip list
+    
+    - name: Check environment
+      run: |
+        echo "Python version:"
+        python --version
+        echo "System information:"
+        uname -a
+        echo "Current directory:"
+        pwd
+        echo "Directory contents:"
+        ls -la
+        echo "Python path:"
+        python -c "import sys; print('\n'.join(sys.path))"
+        echo "Platform info:"
+        python -c "import platform; print(f'Machine: {platform.machine()}')"
+        python -c "import platform; print(f'Platform: {platform.platform()}')"
     
     - name: Build application for Intel
       env:
         ARCHFLAGS: "-arch x86_64"
         MACOSX_DEPLOYMENT_TARGET: "10.15"
       run: |
-        pyinstaller build_mac.spec --target-arch x86_64 --clean
+        echo "Starting build process..."
+        echo "Current directory contents:"
+        ls -la
+        echo "Build spec contents:"
+        cat build_mac.spec
+        echo "Running PyInstaller..."
+        pyinstaller build_mac.spec --target-arch x86_64 --clean --debug all
+        echo "Build complete. Checking dist directory:"
+        ls -la dist
+        echo "App bundle contents:"
+        ls -la dist/简历匹配分析工具.app/Contents/MacOS/
     
     - name: Compress application
       run: |
+        echo "Entering dist directory..."
         cd dist
+        echo "Dist directory contents:"
+        ls -la
+        echo "Creating zip archive..."
         zip -r 简历匹配分析工具-macOS-Intel.zip 简历匹配分析工具.app
+        echo "Zip file created. Contents:"
+        ls -la 简历匹配分析工具-macOS-Intel.zip
     
     - name: Release
       uses: softprops/action-gh-release@v1
+      if: success()
       with:
         files: dist/简历匹配分析工具-macOS-Intel.zip
         tag_name: macos-intel
