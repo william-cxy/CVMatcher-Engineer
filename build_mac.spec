@@ -7,7 +7,17 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[],
-    hiddenimports=['PySide6.QtCore', 'PySide6.QtGui', 'PySide6.QtWidgets'],
+    hiddenimports=[
+        'PySide6.QtCore',
+        'PySide6.QtGui',
+        'PySide6.QtWidgets',
+        'PySide6.QtNetwork',
+        'openai',
+        'PyPDF2',
+        'python-docx',
+        'pandas',
+        'openpyxl'
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
