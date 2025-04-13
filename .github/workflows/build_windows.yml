@@ -22,13 +22,29 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pyinstaller
+        pip install PySide6-Essentials PySide6-Addons
     
     - name: Build executable
       run: |
-        pyinstaller --noconfirm --onefile --windowed --name "简历匹配分析工具" resume_matching_app_pyside6.py
+        pyinstaller build_windows.spec
     
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: windows-executable
-        path: dist/简历匹配分析工具.exe 
+        tag_name: v${{ github.run_number }}
+        release_name: Release v${{ github.run_number }}
+        draft: false
+        prerelease: false
+    
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/简历匹配分析工具.exe
+        asset_name: 简历匹配分析工具.exe
+        asset_content_type: application/octet-stream 
