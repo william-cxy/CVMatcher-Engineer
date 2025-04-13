@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  packages: write
 
 jobs:
   build:
@@ -47,29 +46,13 @@ jobs:
         zip -r 简历匹配分析工具-macOS-Intel.zip 简历匹配分析工具.app
         ls -la
     
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: macOS-Intel-App
-        path: dist/简历匹配分析工具-macOS-Intel.zip
-    
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
+    - name: Release
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: mac-intel-v${{ github.run_number }}
-        release_name: macOS (Intel) Release v${{ github.run_number }}
+        files: dist/简历匹配分析工具-macOS-Intel.zip
+        tag_name: v${{ github.run_number }}
+        name: macOS Intel Build v${{ github.run_number }}
         draft: false
-        prerelease: false
-    
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/简历匹配分析工具-macOS-Intel.zip
-        asset_name: 简历匹配分析工具-macOS-Intel.zip
-        asset_content_type: application/zip 
+        prerelease: false 
