@@ -38,23 +38,11 @@ jobs:
       run: |
         dir dist
     
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
+        files: dist/简历匹配分析工具.exe
         tag_name: win-v${{ github.run_number }}
-        release_name: Windows Release v${{ github.run_number }}
+        name: Windows Release v${{ github.run_number }}
         draft: false
-        prerelease: false
-    
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/简历匹配分析工具.exe
-        asset_name: 简历匹配分析工具.exe
-        asset_content_type: application/octet-stream 
+        prerelease: false 
