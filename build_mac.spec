@@ -48,13 +48,17 @@ exe = EXE(
     entitlements_file=None,
 )
 
-coll = COLLECT(
+app = BUNDLE(
     exe,
     a.binaries,
     a.zipfiles,
     a.datas,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='简历匹配分析工具',
+    name='简历匹配分析工具.app',
+    info_plist={
+        'NSHighResolutionCapable': 'True',
+        'CFBundleIdentifier': 'com.williamcxy.cvmatcher',
+        'CFBundleName': '简历匹配分析工具',
+        'CFBundleDisplayName': '简历匹配分析工具',
+        'CFBundleVersion': '1.0.0',
+    },
 ) 
