@@ -22,11 +22,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pyinstaller
-        pip install PySide6-Essentials PySide6-Addons
+        pip install PySide6==6.6.1 PySide6-Essentials==6.6.1 PySide6-Addons==6.6.1 shiboken6==6.6.1
     
     - name: Build executable
       run: |
+        dir
+        python -c "import sys; print(sys.path)"
         pyinstaller build_windows.spec
+    
+    - name: List build output
+      run: |
+        dir dist
     
     - name: Create Release
       id: create_release

@@ -7,7 +7,17 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[],
-    hiddenimports=['PySide6.QtCore', 'PySide6.QtGui', 'PySide6.QtWidgets'],
+    hiddenimports=[
+        'PySide6.QtCore',
+        'PySide6.QtGui',
+        'PySide6.QtWidgets',
+        'PySide6.QtNetwork',
+        'openai',
+        'PyPDF2',
+        'python-docx',
+        'pandas',
+        'openpyxl'
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -40,5 +50,4 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='app_icon.ico'  # 如果有图标文件的话
 ) 
