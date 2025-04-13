@@ -5,6 +5,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
     runs-on: macos-latest
@@ -40,23 +44,11 @@ jobs:
         zip -r 简历匹配分析工具-macOS.zip "简历匹配分析工具.app"
         cd ..
     
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
+        files: dist/简历匹配分析工具-macOS.zip
         tag_name: v${{ github.run_number }}-mac
-        release_name: Release v${{ github.run_number }} (macOS)
+        name: Release v${{ github.run_number }} (macOS)
         draft: false
-        prerelease: false
-    
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/简历匹配分析工具-macOS.zip
-        asset_name: 简历匹配分析工具-macOS.zip
-        asset_content_type: application/zip 
+        prerelease: false 
