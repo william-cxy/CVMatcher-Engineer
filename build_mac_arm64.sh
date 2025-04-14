@@ -2,9 +2,10 @@
 
 # 清理之前的构建文件
 rm -rf build dist
+rm -rf icon.iconset icon.icns
 
-# 创建临时图标目录
-mkdir -p icon.iconset
+# 创建图标
+mkdir icon.iconset
 sips -z 16 16   source.png --out icon.iconset/icon_16x16.png
 sips -z 32 32   source.png --out icon.iconset/icon_16x16@2x.png
 sips -z 32 32   source.png --out icon.iconset/icon_32x32.png
@@ -15,11 +16,9 @@ sips -z 256 256 source.png --out icon.iconset/icon_256x256.png
 sips -z 512 512 source.png --out icon.iconset/icon_256x256@2x.png
 sips -z 512 512 source.png --out icon.iconset/icon_512x512.png
 sips -z 1024 1024 source.png --out icon.iconset/icon_512x512@2x.png
-
-# 转换为icns
 iconutil -c icns icon.iconset
 
-# 使用pyinstaller打包
+# 使用 PyInstaller 打包应用
 pyinstaller build_mac_arm64.spec
 
 # 检查打包是否成功

@@ -16,21 +16,10 @@ a = Analysis(
         'PyPDF2',
         'docx',
         'pandas',
-        'openpyxl',
-        'openai.api_resources',
-        'openai.api_resources.abstract',
-        'openai.api_resources.experimental',
-        'httpx',
-        'anyio',
-        'certifi'
+        'openpyxl'
     ],
     hookspath=[],
-    hooksconfig={
-        "openai": {
-            "includes": ["openai.api_resources.*"],
-            "excludes": []
-        }
-    },
+    hooksconfig={},
     runtime_hooks=[],
     excludes=[
         'matplotlib', 'tkinter', 'scipy.spatial.cKDTree',
@@ -77,7 +66,7 @@ app = BUNDLE(
         'CFBundleName': '简历匹配分析工具',
         'CFBundleDisplayName': '简历匹配分析工具',
         'CFBundleVersion': '1.0.0',
-        'LSMinimumSystemVersion': '10.15',
+        'LSMinimumSystemVersion': '11.0',
         'NSAppleArchitecturePriority': ['arm64'],
     },
 ) 
