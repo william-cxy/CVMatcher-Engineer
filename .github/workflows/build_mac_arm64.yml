@@ -31,7 +31,7 @@ jobs:
       run: |
         brew update
         brew install create-dmg
-        brew install iconutil
+        which iconutil  # 检查 iconutil 是否存在（macOS 系统自带）
 
     - name: Install Python dependencies
       run: |
