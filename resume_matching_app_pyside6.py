@@ -209,7 +209,8 @@ class AnalysisWorker(QThread):
             # 调用DeepSeek API
             client = OpenAI(
                 api_key=self.api_key,
-                base_url="https://api.deepseek.com/v1"
+                base_url="https://api.deepseek.com/v1",
+                http_client=None  # 显式设置为 None 以避免 proxies 错误
             )
             
             # 发送初始进度
@@ -858,7 +859,8 @@ class ResumeMatchingApp(QMainWindow):
         try:
             client = OpenAI(
                 api_key=api_key,
-                base_url="https://api.deepseek.com/v1"
+                base_url="https://api.deepseek.com/v1",
+                http_client=None  # 显式设置为 None 以避免 proxies 错误
             )
             # 发送一个简单的请求来验证API密钥
             client.chat.completions.create(

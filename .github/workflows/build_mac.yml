@@ -30,6 +30,9 @@ jobs:
         pip list
     
     - name: Check environment
+      env:
+        ARCHFLAGS: "-arch x86_64"
+        MACOSX_DEPLOYMENT_TARGET: "10.15"
       run: |
         echo "Python version:"
         python --version
@@ -39,8 +42,6 @@ jobs:
         pwd
         echo "Directory contents:"
         ls -la
-        echo "Python path:"
-        python -c "import sys; print('\n'.join(sys.path))"
         echo "Platform info:"
         python -c "import platform; print(f'Machine: {platform.machine()}')"
         python -c "import platform; print(f'Platform: {platform.platform()}')"
@@ -51,20 +52,15 @@ jobs:
         MACOSX_DEPLOYMENT_TARGET: "10.15"
       run: |
         echo "Starting build process..."
-        echo "Current directory contents:"
-        ls -la
         echo "Build spec contents:"
         cat build_mac.spec
         echo "Running PyInstaller..."
-        pyinstaller build_mac.spec --target-arch x86_64 --clean --debug all
+        pyinstaller build_mac.spec
         echo "Build complete. Checking dist directory:"
         ls -la dist
-        echo "App bundle contents:"
-        ls -la dist/简历匹配分析工具.app/Contents/MacOS/
     
     - name: Compress application
       run: |
-        echo "Entering dist directory..."
         cd dist
         echo "Dist directory contents:"
         ls -la

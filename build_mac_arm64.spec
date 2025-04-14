@@ -16,10 +16,21 @@ a = Analysis(
         'PyPDF2',
         'docx',
         'pandas',
-        'openpyxl'
+        'openpyxl',
+        'openai.api_resources',
+        'openai.api_resources.abstract',
+        'openai.api_resources.experimental',
+        'httpx',
+        'anyio',
+        'certifi'
     ],
     hookspath=[],
-    hooksconfig={},
+    hooksconfig={
+        "openai": {
+            "includes": ["openai.api_resources.*"],
+            "excludes": []
+        }
+    },
     runtime_hooks=[],
     excludes=[
         'matplotlib', 'tkinter', 'scipy.spatial.cKDTree',
@@ -31,7 +42,7 @@ a = Analysis(
     win_private_assemblies=False,
     cipher=block_cipher,
     noarchive=False,
-    target_arch='x86_64'
+    target_arch='arm64'
 )
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
@@ -49,7 +60,7 @@ exe = EXE(
     console=False,
     disable_windowed_traceback=False,
     argv_emulation=True,
-    target_arch='x86_64',
+    target_arch='arm64',
     codesign_identity=None,
     entitlements_file=None,
 )
@@ -67,6 +78,6 @@ app = BUNDLE(
         'CFBundleDisplayName': '简历匹配分析工具',
         'CFBundleVersion': '1.0.0',
         'LSMinimumSystemVersion': '10.15',
-        'NSAppleArchitecturePriority': ['x86_64'],
+        'NSAppleArchitecturePriority': ['arm64'],
     },
 ) 
