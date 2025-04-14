@@ -980,20 +980,39 @@ class ResumeMatchingApp(QMainWindow):
     def load_settings(self):
         """加载设置"""
         try:
-            if os.path.exists("settings.json"):
-                with open("settings.json", "r", encoding="utf-8") as f:
+            # 获取应用程序包内的路径
+            if getattr(sys, 'frozen', False):
+                # 如果是打包后的应用
+                app_path = os.path.dirname(sys.executable)
+                settings_path = os.path.join(app_path, 'settings.json')
+            else:
+                # 如果是开发环境
+                settings_path = 'settings.json'
+            
+            if os.path.exists(settings_path):
+                with open(settings_path, 'r', encoding='utf-8') as f:
                     return json.load(f)
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"加载设置失败: {str(e)}")
         return {}
     
     def save_settings(self):
         """保存设置"""
         try:
-            with open("settings.json", "w", encoding="utf-8") as f:
+            # 获取应用程序包内的路径
+            if getattr(sys, 'frozen', False):
+                # 如果是打包后的应用
+                app_path = os.path.dirname(sys.executable)
+                settings_path = os.path.join(app_path, 'settings.json')
+            else:
+                # 如果是开发环境
+                settings_path = 'settings.json'
+            
+            with open(settings_path, 'w', encoding='utf-8') as f:
                 json.dump(self.settings, f, ensure_ascii=False, indent=4)
         except Exception as e:
             QMessageBox.warning(self, "警告", f"保存设置失败: {str(e)}")
+            print(f"保存设置失败: {str(e)}")
     
     def load_job_history(self):
         """加载历史岗位记录"""
