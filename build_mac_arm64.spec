@@ -6,7 +6,7 @@ a = Analysis(
     ['resume_matching_app_pyside6.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('settings.json', '.')],
     hiddenimports=[
         'PySide6.QtCore',
         'PySide6.QtGui',
