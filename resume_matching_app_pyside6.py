@@ -15,6 +15,13 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QTimer, Signal, Slot, QSize, QThread
 from PySide6.QtGui import QFont, QColor, QPalette, QIcon, QTextCursor, QFontDatabase
 
+# 导入 OpenAI
+try:
+    from openai import OpenAI
+    OPENAI_SUPPORT = True
+except ImportError:
+    OPENAI_SUPPORT = False
+
 # 尝试导入文件处理相关库
 try:
     import PyPDF2
@@ -34,12 +41,20 @@ try:
 except ImportError:
     EXCEL_SUPPORT = False
 
-# 尝试导入OpenAI客户端
-try:
-    from openai import OpenAI
-    OPENAI_SUPPORT = True
-except ImportError:
-    OPENAI_SUPPORT = False
+def get_resource_path(relative_path):
+    """获取资源文件的绝对路径"""
+    if hasattr(sys, '_MEIPASS'):
+        # PyInstaller 创建临时文件夹，将路径存储在 _MEIPASS 中
+        base_path = sys._MEIPASS
+    elif getattr(sys, 'frozen', False):
+        # py2app 打包后的情况
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        base_path = os.path.join(base_path, 'Resources')
+    else:
+        # 开发环境下直接使用当前目录
+        base_path = os.path.abspath(os.path.dirname(__file__))
+    
+    return os.path.join(base_path, relative_path)
 
 class SaveJobDialog(QDialog):
     """保存职位对话框"""
@@ -122,6 +137,14 @@ class AnalysisWorker(QThread):
         self.api_key = api_key
         self.model_name = model_name
         self.is_running = True
+        
+        # 初始化 OpenAI 客户端
+        if not OPENAI_SUPPORT:
+            raise ImportError("OpenAI package is not installed")
+        self.client = OpenAI(
+            api_key=self.api_key,
+            base_url="https://api.deepseek.com/v1"
+        )
     
     def run(self):
         try:
@@ -206,13 +229,6 @@ class AnalysisWorker(QThread):
                 model = "deepseek-chat"
                 total_steps = 60  # V3模型大约需要60秒
             
-            # 调用DeepSeek API
-            client = OpenAI(
-                api_key=self.api_key,
-                base_url="https://api.deepseek.com/v1",
-                http_client=None  # 显式设置为 None 以避免 proxies 错误
-            )
-            
             # 发送初始进度
             self.progress_updated.emit(0)
             
@@ -226,7 +242,7 @@ class AnalysisWorker(QThread):
             def call_api():
                 nonlocal api_response_received, api_result
                 try:
-                    response = client.chat.completions.create(
+                    response = self.client.chat.completions.create(
                         model=model,
                         messages=[
                             {"role": "system", "content": "你是一个专业的技术招聘专家，精通各类编程语言和技术栈，擅长评估工程师简历与技术岗位的匹配度。"},
@@ -855,16 +871,21 @@ class ResumeMatchingApp(QMainWindow):
             QMessageBox.warning(self, "警告", "请输入API密钥")
             return
         
+        # 验证 OpenAI 支持
+        if not OPENAI_SUPPORT:
+            QMessageBox.critical(self, "错误", "OpenAI 包未正确安装，请检查环境")
+            return
+            
         # 验证API密钥
         try:
             client = OpenAI(
                 api_key=api_key,
-                base_url="https://api.deepseek.com/v1",
-                http_client=None  # 显式设置为 None 以避免 proxies 错误
+                base_url="https://api.deepseek.com/v1"
             )
             # 发送一个简单的请求来验证API密钥
+            model = "deepseek-reasoner" if model_name == "DeepSeek R1" else "deepseek-chat"
             client.chat.completions.create(
-                model="deepseek-chat",
+                model=model,
                 messages=[{"role": "user", "content": "test"}],
                 max_tokens=1
             )
@@ -980,15 +1001,7 @@ class ResumeMatchingApp(QMainWindow):
     def load_settings(self):
         """加载设置"""
         try:
-            # 获取应用程序包内的路径
-            if getattr(sys, 'frozen', False):
-                # 如果是打包后的应用
-                app_path = os.path.dirname(sys.executable)
-                settings_path = os.path.join(app_path, 'settings.json')
-            else:
-                # 如果是开发环境
-                settings_path = 'settings.json'
-            
+            settings_path = get_resource_path('settings.json')
             if os.path.exists(settings_path):
                 with open(settings_path, 'r', encoding='utf-8') as f:
                     return json.load(f)
@@ -999,15 +1012,9 @@ class ResumeMatchingApp(QMainWindow):
     def save_settings(self):
         """保存设置"""
         try:
-            # 获取应用程序包内的路径
-            if getattr(sys, 'frozen', False):
-                # 如果是打包后的应用
-                app_path = os.path.dirname(sys.executable)
-                settings_path = os.path.join(app_path, 'settings.json')
-            else:
-                # 如果是开发环境
-                settings_path = 'settings.json'
-            
+            settings_path = get_resource_path('settings.json')
+            # 确保目录存在
+            os.makedirs(os.path.dirname(settings_path), exist_ok=True)
             with open(settings_path, 'w', encoding='utf-8') as f:
                 json.dump(self.settings, f, ensure_ascii=False, indent=4)
         except Exception as e:
@@ -1017,8 +1024,9 @@ class ResumeMatchingApp(QMainWindow):
     def load_job_history(self):
         """加载历史岗位记录"""
         try:
-            if os.path.exists("job_history.json"):
-                with open("job_history.json", "r", encoding="utf-8") as f:
+            history_path = get_resource_path('job_history.json')
+            if os.path.exists(history_path):
+                with open(history_path, "r", encoding="utf-8") as f:
                     return json.load(f)
         except Exception:
             pass
@@ -1027,7 +1035,10 @@ class ResumeMatchingApp(QMainWindow):
     def save_job_history(self):
         """保存历史岗位记录"""
         try:
-            with open("job_history.json", "w", encoding="utf-8") as f:
+            history_path = get_resource_path('job_history.json')
+            # 确保目录存在
+            os.makedirs(os.path.dirname(history_path), exist_ok=True)
+            with open(history_path, "w", encoding="utf-8") as f:
                 json.dump(self.job_history, f, ensure_ascii=False, indent=4)
         except Exception as e:
             QMessageBox.warning(self, "警告", f"保存历史记录失败: {str(e)}")

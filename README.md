@@ -1,73 +1,57 @@
 # 工程师岗位智能匹配工具
 
-基于OpenAI的简历与岗位智能匹配工具，支持批量导入简历，自动分析匹配度。
+基于OpenAI的简历智能匹配工具，帮助HR和招聘人员快速筛选合适的工程师简历。
 
-## 功能特点
+## 主要功能
 
-- 支持PDF、Word格式简历导入
-- 智能分析简历内容与岗位要求的匹配程度
-- 批量处理多份简历
+- 支持PDF和Word格式简历批量导入
+- 基于OpenAI的智能匹配算法
 - 可视化展示匹配结果
 - 支持自定义岗位要求
-- 历史记录查看
+- 历史记录管理
 
-## 系统要求
+## Mac版本使用说明
 
-- macOS 10.13 或更高版本
-- 无需安装Python环境，已打包为独立应用
+1. 下载`Resume Matching App.app`
+2. 将应用拖入Applications文件夹
+3. 首次运行时在系统偏好设置中允许运行
+4. 配置OpenAI API Key
+5. 开始使用
 
-## 安装说明
+## 开发环境
 
-1. 下载最新版本的应用程序
-2. 将 `Resume Matching App.app` 拖拽到应用程序文件夹
-3. 首次运行时，如果提示安全警告，请在"系统偏好设置 > 安全性与隐私"中允许运行
-
-## 使用方法
-
-1. 启动应用程序
-2. 导入简历文件（支持单个或批量导入）
-3. 设置岗位要求
-4. 点击分析按钮开始匹配
-5. 查看分析结果
-
-## 开发说明
-
-本项目使用以下技术栈：
-
-- Python
-- PySide6 (Qt for Python)
+- Python 3.13
+- PySide6
 - OpenAI API
 - pandas
 - PyPDF2
 - python-docx
 
-### 开发环境配置
+## 本地开发
 
 ```bash
 # 安装依赖
 pip install -r requirements.txt
 
-# 运行开发版本
+# 运行
 python resume_matching_app_pyside6.py
 ```
 
-### 打包说明
-
-使用py2app打包Mac应用：
+## 打包发布
 
 ```bash
 # 安装py2app
 pip install py2app
 
-# 打包应用
+# 打包Mac应用
 python setup.py py2app --semi-standalone
 ```
 
 ## 注意事项
 
-- 使用前请确保配置了有效的OpenAI API Key
-- 请勿删除settings.json和job_history.json文件
-- 建议定期备份历史数据
+- 请确保配置了有效的OpenAI API Key
+- 建议定期备份job_history.json
+- 首次运行可能需要在系统偏好设置中允许运行
 
 ## 常见问题
 

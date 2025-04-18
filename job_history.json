@@ -1,1 +1,8 @@
-[]
+[
+    {
+        "name": "SRE",
+        "company": "智算",
+        "content": "工作职责：\n1.负责构建和运维大型高可靠的自动化、智能化GPU调度K8S平台；\n2.负责平台容量规划、配置管理及可用性保障，包括但不限于K8S集群、监控及日志相关组件；\n3.负责优化并持续改进现有的K8S容器平台与工具架构；\n4.持续跟进K8S平台架构应用部署以及平台组件优化，跟进K8S维工具开发；\n5.参与平台SRE轮值OnCall，完成运维工作文档编写；\n6.持续关注井跟进CNCF社区的云原生应用GAl以及Bug Fix；\n\n任职资格：\n1.计算机相关专业，统招本科以上，3年以上容器运维经验，精通Linux操作系统；\n2.K8S及云原生组件运维技能：熟悉etcd，apiserver，scheduler，controller，kubelet，kube-proxy组件基本工作原理，能够独立做Troubleshooting；\n3.对GPU容器、镜像、网络、存储、持久化、监控、安全有深入的理解；\n4.熟悉K8S常见应用部署模板配置（Deployment/DaemonSet/StatefulSet）；\n5.熟悉常见开源中间件的配置（例如Ingress），能够做应用层面的Troubleshooting，熟悉tcp/http 协议，擅长tcpdump/wireshark/httpwatch工具使用；\n6.熟悉Python、Golang等至少一种语言开发，有做过自动化运维的经验；\n7.掌握Prometheus监控系统的使用及配置；\n8.能够承受较高工作压力，有强烈的工作责任心，有较好的沟通能力、有良好的团队合作精神；\n\n有以下一项或多项经验者优先：\n1.掌握GPU服务器硬件运维管理和性能调优，具备丰富的排障经验；\n2.掌握 Kafka、Zookeeper、Elasticsearch 中一种或多种开源软件的运维管理和性能调优，具备丰富的排障经验；\n3.掌握Mongo、Tidb、PQSql中一种或多种开源软件的运维管理和性能调优，具备丰富的排障经验。\n人才画像\n11月5日更新\nSRE：期望有一种技术能力能独挡一面，比如监控，日志，稳定性，自动化，基建平台建设能力等，最好大厂的有经验，能直接参与工作",
+        "timestamp": "2025-04-15 11:16:33"
+    }
+]
